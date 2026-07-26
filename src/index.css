@@ -1,0 +1,176 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@font-face {
+  font-family: "Geist Mono";
+  src: url("../node_modules/geist/dist/fonts/geist-mono/GeistMono-Variable.woff2")
+    format("woff2-variations");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* The shadcn surface tokens stay neutral (chroma 0); color is reserved for the
+   four spec dimensions below, so a hue always means one specific thing. */
+:root {
+  --radius: 0rem;
+  --background: oklch(0.995 0 0);
+  --foreground: oklch(0.16 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.16 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.16 0 0);
+  --primary: oklch(0.2 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.96 0 0);
+  --secondary-foreground: oklch(0.2 0 0);
+  --muted: oklch(0.96 0 0);
+  --muted-foreground: oklch(0.53 0 0);
+  --accent: oklch(0.95 0 0);
+  --accent-foreground: oklch(0.2 0 0);
+  --destructive: oklch(0.42 0 0);
+  --border: oklch(0.9 0 0);
+  --input: oklch(0.9 0 0);
+  --ring: oklch(0.6 0 0);
+
+  /* One hue per spec dimension. Foregrounds sit at ~0.45 L for AA on the tint. */
+  --fa: oklch(0.48 0.19 295);
+  --fa-bg: oklch(0.95 0.03 295);
+  --python: oklch(0.48 0.15 245);
+  --python-bg: oklch(0.95 0.03 245);
+  --cuda: oklch(0.46 0.14 150);
+  --cuda-bg: oklch(0.95 0.04 150);
+  --torch: oklch(0.5 0.16 45);
+  --torch-bg: oklch(0.95 0.04 55);
+
+  --pattern-color: oklch(0.16 0 0 / 14%);
+  --pattern-size: 20px;
+}
+
+.dark {
+  --background: oklch(0.14 0 0);
+  --foreground: oklch(0.96 0 0);
+  --card: oklch(0.18 0 0);
+  --card-foreground: oklch(0.96 0 0);
+  --popover: oklch(0.19 0 0);
+  --popover-foreground: oklch(0.96 0 0);
+  --primary: oklch(0.94 0 0);
+  --primary-foreground: oklch(0.18 0 0);
+  --secondary: oklch(0.25 0 0);
+  --secondary-foreground: oklch(0.96 0 0);
+  --muted: oklch(0.25 0 0);
+  --muted-foreground: oklch(0.66 0 0);
+  --accent: oklch(0.27 0 0);
+  --accent-foreground: oklch(0.96 0 0);
+  --destructive: oklch(0.7 0 0);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 16%);
+  --ring: oklch(0.55 0 0);
+
+  /* Dark mode flips the pairing: bright foreground on a low-alpha tint. */
+  --fa: oklch(0.78 0.14 295);
+  --fa-bg: oklch(0.78 0.14 295 / 14%);
+  --python: oklch(0.76 0.12 245);
+  --python-bg: oklch(0.76 0.12 245 / 14%);
+  --cuda: oklch(0.78 0.14 150);
+  --cuda-bg: oklch(0.78 0.14 150 / 14%);
+  --torch: oklch(0.78 0.13 55);
+  --torch-bg: oklch(0.78 0.13 55 / 14%);
+
+  --pattern-color: oklch(1 0 0 / 15%);
+}
+
+@theme inline {
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-sans: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-fa: var(--fa);
+  --color-fa-bg: var(--fa-bg);
+  --color-python: var(--python);
+  --color-python-bg: var(--python-bg);
+  --color-cuda: var(--cuda);
+  --color-cuda-bg: var(--cuda-bg);
+  --color-torch: var(--torch);
+  --color-torch-bg: var(--torch-bg);
+
+  /* Hard edges everywhere: the whole radius scale collapses to 0, so any
+     rounded-* utility (ours or shadcn's) is a no-op. */
+  --radius-xs: 0rem;
+  --radius-sm: 0rem;
+  --radius-md: 0rem;
+  --radius-lg: 0rem;
+  --radius-xl: 0rem;
+  --radius-2xl: 0rem;
+  --radius-3xl: 0rem;
+}
+
+/* Still scrollable (shift-wheel, drag, keyboard) — just no visible bar. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-mono antialiased;
+    /* "zero" = slashed zero, which matters a lot in version strings. */
+    font-feature-settings: "ss01", "zero";
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Fixed dot matrix behind everything, faded out toward the bottom. Cards are
+     opaque, so it only ever shows in the gutters.
+     Swap the background-image for a different texture:
+       diagonal hatch → repeating-linear-gradient(45deg, var(--pattern-color) 0 1px, transparent 1px 7px)
+       plain grid     → linear-gradient(to right, ...), linear-gradient(to bottom, ...) */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image: radial-gradient(
+      var(--pattern-color) 1px,
+      transparent 1px
+    );
+    background-size: var(--pattern-size) var(--pattern-size);
+    background-position: center;
+    -webkit-mask-image: radial-gradient(
+      ellipse 100% 70% at 50% 0%,
+      #000 40%,
+      transparent 100%
+    );
+    mask-image: radial-gradient(
+      ellipse 100% 70% at 50% 0%,
+      #000 40%,
+      transparent 100%
+    );
+  }
+}

@@ -1,0 +1,80 @@
+name: Build and deploy
+
+on:
+  push:
+    branches: [main]
+  # An upstream repository we don't own can't trigger a workflow here, so the
+  # daily run polls it: it regenerates the index, commits it only when new
+  # wheels appeared, and redeploys.
+  schedule:
+    - cron: "17 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Refresh wheel index
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 build_data.py -o public/wheels.json
+
+      - name: Commit refreshed index
+        if: github.event_name != 'pull_request'
+        run: |
+          if git diff --quiet -- public/wheels.json; then
+            echo "No new wheels."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/wheels.json
+          git commit -m "chore: refresh wheel index [skip ci]"
+          git push
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/
+        run: pnpm build
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
