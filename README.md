@@ -8,6 +8,25 @@ Wheels come from [mjun0812/flash-attention-prebuild-wheels](https://github.com/m
 
 Live: https://seanghay.github.io/flash-attention-wheel-finder/
 
+## Install a wheel without picking one
+
+```sh
+curl -fsSL https://seanghay.github.io/flash-attention-wheel-finder/install.sh | bash
+```
+
+Reads your Python, torch and CUDA versions, finds the wheel that matches, and pips it in.
+Linux only, and torch has to be installed already since the wheel is built against a
+specific version of it.
+
+| | |
+|---|---|
+| `FA_VERSION=2.7.4` | pin a flash-attn version instead of taking the newest |
+| `PYTHON=/path/to/python` | target a different interpreter |
+| `DRY_RUN=1` | print the wheel URL and stop |
+
+flash-attn 3 installs as `flash_attn_3`, a separate import, so you only get it with
+`FA_VERSION=3.0.0` or if it's the sole match for your setup.
+
 ## Running it
 
 ```sh

@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react"
-import { Package, Search, SearchX, Sparkles, X } from "lucide-react"
+import { Package, Search, SearchX, Sparkles, Terminal, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
+import { CopyButton } from "@/components/copy-button"
 import { FacetSelect } from "@/components/facet-select"
 import { GithubIcon } from "@/components/github-icon"
 import { SpecChip } from "@/components/spec-chip"
@@ -24,6 +25,8 @@ import {
 } from "@/lib/wheels"
 
 const REPO_URL = "https://github.com/mjun0812/flash-attention-prebuild-wheels"
+const SITE_URL = "https://seanghay.github.io/flash-attention-wheel-finder"
+const INSTALL_CMD = `curl -fsSL ${SITE_URL}/install.sh | bash`
 const PAGE = 30
 
 export default function App() {
@@ -108,6 +111,18 @@ export default function App() {
           <ThemeToggle />
         </div>
       </header>
+
+      <div className="border-border bg-card mb-4 flex flex-wrap items-center gap-x-3 gap-y-2 border p-3 pl-4">
+        <Terminal className="text-muted-foreground size-3.5 shrink-0" />
+        <code className="no-scrollbar min-w-0 flex-1 overflow-x-auto text-[12px] font-light whitespace-nowrap">
+          <span className="text-muted-foreground select-none">$ </span>
+          {INSTALL_CMD}
+        </code>
+        <span className="text-muted-foreground hidden text-[11.5px] font-light lg:inline">
+          detects your Python, CUDA and torch
+        </span>
+        <CopyButton value={INSTALL_CMD} label="Copy install command" />
+      </div>
 
       <div className="border-border bg-card mb-4 rounded-lg border p-4">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
