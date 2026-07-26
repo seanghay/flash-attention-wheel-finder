@@ -29,24 +29,6 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Refresh wheel index
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: python3 build_data.py -o public/wheels.json
-
-      - name: Commit refreshed index
-        if: github.event_name != 'pull_request'
-        run: |
-          if git diff --quiet -- public/wheels.json; then
-            echo "No new wheels."
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/wheels.json
-          git commit -m "chore: refresh wheel index [skip ci]"
-          git push
-
       - uses: pnpm/action-setup@v4
         with:
           version: 10
@@ -57,6 +39,27 @@ jobs:
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
+
+      - name: Refresh wheel index
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 build_data.py -o public/wheels.json
+
+      # The card prints the wheel count, so it is rendered after the refresh.
+      - name: Render OG card
+        run: pnpm og
+
+      - name: Commit refreshed index
+        run: |
+          if git diff --quiet -- public/wheels.json; then
+            echo "No new wheels."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/wheels.json public/og.jpg
+          git commit -m "chore: refresh wheel index [skip ci]"
+          git push
 
       - name: Build
         env:
